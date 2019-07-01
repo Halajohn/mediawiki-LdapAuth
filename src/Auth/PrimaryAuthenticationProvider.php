@@ -472,6 +472,10 @@ class PrimaryAuthenticationProvider extends AbstractPrimaryAuthenticationProvide
 			$message = new Message( "ldapauth-bind-dn", $msg_bind_params );
 			$this->ldap->bind( $username, $req->password );
 
+                        // Rebind to admin so that the following search could success
+                        $pass = $this->config->get( 'BindPass' )[$req->domain];
+                        $this->ldap->bind( $dn, $pass );
+
 			return $this->ldap;
 		} catch ( SymException $e ) {
 			// Generate log then try next connection
